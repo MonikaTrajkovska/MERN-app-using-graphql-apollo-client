@@ -1,45 +1,35 @@
-//Get the express library from node_modules which we have just downloaded.
-const express = require("express");
+const express = require('express')
+//const graphqlHTTP = require('express-graphql')
+const { graphqlHTTP } = require('express-graphql');
+//const mongoose = require('mongoose');
+const schema = require('./schema/schema')
+const cors = require('cors')
 
-const graphqlHTTP = require("express-graphql");
-
-const mongoose = require("mongoose"); //using mongoose to connect with db
-
-const cors = require("cors");
-
-//Imports
-const schema = require("./schema/schema");
-
-//Making const of express() into a variable (JS function first class Object).
 const app = express();
+app.use(cors())
+const mongoose = require("mongoose");
+// mongoose
+//     .connect(
+//         "mongodb+srv://user:DEV123!@cluster0.wqoad.mongodb.net/projects?retryWrites=true&w=majority",
+//         { useNewUrlParser: true, useUnifiedTopology: true }
+//     )
+//     .then(() => console.log("Connected to MongoDB Atlas"))
+//     .catch(err => console.log("Error: ", err.message));
 
-/**
- * Cors added as middleware
- */
-app.use(cors());
 
-//Please change mongoDB connection as maybe I have deleted this db on mlab when you are using it.
-mongoose.connect(
-  "mongodb://test:test123@ds145434.mlab.com:45434/gql-practice",
-  { useNewUrlParser: true },
-  () => {
-    console.log("Connect with DB successfully");
-  }
-);
 
-/*We can use graphql on express server with middlewares, so that whenever
-    we need graphql query from frontend, our express server can handle it
-    smoothly.
-*/
-app.use(
-  "/graphql",
-  graphqlHTTP({
-    schema: schema,
-    graphiql: true
-  })
-);
 
-//When our application starts, it will listen on port 4000
-app.listen(5000, () => {
-  console.log("Server is listening on port 4000");
-});
+
+mongoose.connect('mongodb://dev:DEV123!@cluster0-shard-00-00.r2fa9.mongodb.net:27017,cluster0-shard-00-01.r2fa9.mongodb.net:27017,cluster0-shard-00-02.r2fa9.mongodb.net:27017/projects?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority')
+mongoose.connection.once('open', () => {
+  console.log("connected")
+
+})
+app.use('/graphql', graphqlHTTP({
+  schema,
+  graphiql: true
+}))
+
+app.listen(4000, () => {
+  console.log("now listening on port 4000")
+})

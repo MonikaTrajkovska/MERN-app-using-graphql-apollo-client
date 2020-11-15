@@ -1,9 +1,10 @@
 import React from "react";
 import { compose } from "recompose";
 import {
-  getOwnersQuery,
-  AddCarMutation,
-  getCarsQuery
+  getAuthorsQuery,
+  addProjectMut,
+
+  getProjectsQuery
 } from "./../queries/queries";
 import { graphql } from "react-apollo";
 import HandleFormHook from "./../hooks/handleFormHook";
@@ -11,14 +12,15 @@ import HandleFormHook from "./../hooks/handleFormHook";
 const AddCar = props => {
   const getFormData = () => {
     console.log(`${inputs}`);
-    props.AddCarMutation({
+    props.addProjectMut({
       variables: {
-        name: inputs.carName,
-        model: parseInt(inputs.model),
-        company: inputs.company,
-        ownerId: inputs.owner
+        name: inputs.name,
+        description: inputs.description,
+        // author: inputs.author,
+        authorId: inputs.author
+        // owner: inputs.owner
       },
-      refetchQueries: [{ query: getCarsQuery }]
+      refetchQueries: [{ query: getProjectsQuery }]
     });
   };
 
@@ -27,14 +29,14 @@ const AddCar = props => {
   );
 
   const getOwners = () => {
-    var data = props.getOwnersQuery;
+    var data = props.getAuthorsQuery;
     if (data.loading) {
       return <option disabled>Owner loading...</option>;
     } else {
-      return data.owners.map(owner => {
+      return data.authors.map(author => {
         return (
-          <option key={owner.id} value={owner.id}>
-            {owner.name}
+          <option key={author.id} value={author.id}>
+            {author.name}
           </option>
         );
       });
@@ -45,38 +47,38 @@ const AddCar = props => {
     <>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label>Car Name</label>
+          <label>Project name</label>
           <input
             type="text"
-            name="carName"
+            name="name"
             onChange={handleInputChange}
-            value={inputs.carName}
+            value={inputs.name}
           ></input>
         </div>
         <div className="field">
-          <label>Model</label>
-          <input
-            type="number"
-            name="model"
-            onChange={handleInputChange}
-            value={inputs.model}
-          ></input>
-        </div>
-        <div className="field">
-          <label>Company:</label>
+          <label>Description</label>
           <input
             type="text"
-            name="company"
+            name="description"
             onChange={handleInputChange}
-            value={inputs.company}
+            value={inputs.description}
           ></input>
         </div>
+        {/* <div className="field">
+        <label>Company:</label>
+        <input
+          type="text"
+          name="company"
+          onChange={handleInputChange}
+          value={inputs.company}
+        ></input>
+      </div> */}
         <div className="field">
-          <label>Owner:</label>
+          <label>author:</label>
           <select
-            name="owner"
+            name="author"
             onChange={handleInputChange}
-            value={inputs.owner}
+            value={inputs.author}
           >
             <option>Select Owner</option>
             {getOwners(props)}
@@ -89,6 +91,12 @@ const AddCar = props => {
 };
 
 export default compose(
-  graphql(getOwnersQuery, { name: "getOwnersQuery" }),
-  graphql(AddCarMutation, { name: "AddCarMutation" })
+  graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+  graphql(addProjectMut, { name: "addProjectMut" })
 )(AddCar);
+
+
+
+
+
+

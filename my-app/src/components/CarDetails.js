@@ -1,23 +1,23 @@
 import React from "react";
 import { graphql } from "react-apollo";
-import { getCarQuery } from "./../queries/queries";
+import { query } from "./../queries/queries";
 
 const CarDetails = props => {
-  console.log(props.carId.Id);
+  console.log(props.projectId.Id);
 
   const getCarDetails = () => {
-    const { car } = props.data;
-    console.log(car);
-    if (car) {
+    const { project } = props.data;
+    console.log(project);
+    if (project) {
       return (
         <div>
-          <h2>{car.name}</h2>
-          <p>model : {car.model}</p>
-          <p>company : {car.company}</p>
-          <p>owner : {car.owner.name}</p>
+          <h2>{project.name}</h2>
+          <p>model : {project.description}</p>
+          {/* <p>company : {car.company}</p>
+          <p>owner : {car.owner.name}</p> */}
           <p>All cars by this owner :</p>
           <ul>
-            {car.owner.cars.map(item => {
+            {project.author.projects.map(item => {
               return <li key={item.id}>{item.name}</li>;
             })}
           </ul>
@@ -31,11 +31,11 @@ const CarDetails = props => {
   return <div id="carDetails">{getCarDetails()}</div>;
 };
 
-export default graphql(getCarQuery, {
+export default graphql(query, {
   options: props => {
     return {
       variables: {
-        id: props.carId.Id
+        id: props.projectId.Id
       }
     };
   }

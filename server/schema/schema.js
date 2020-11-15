@@ -1,140 +1,163 @@
-const graphql = require("graphql"); //use graphql package
+const graphql = require('graphql')
+//const _ = require('lodash')
+const Project = require('../models/project')
+const Author = require('../models/author')
 
-const _ = require("lodash");
-
-const cars = require("../models/car");
-const owners = require("../models/owner");
-
-/*Getting GraphQLObjectType function from 'graphql' to define the (dataType) 
- structure of our queries and their model type.
-*/
-const {
-  GraphQLObjectType,
-  GraphQLID,
-  GraphQLString,
-  GraphQLInt,
+const { GraphQLObjectType,
   GraphQLSchema,
-  GraphQLList
+  GraphQLString,
+  GraphQLID,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLNonNull
 } = graphql;
 
-//Defining CarType with its fields.
-const CarType = new GraphQLObjectType({
-  name: "Car",
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    model: { type: GraphQLInt },
-    company: { type: GraphQLString },
-    owner: {
-      type: OwnerType,
-      resolve(parent, args) {
-        return owners.findById(parent.ownerId);
-      }
-    } //owner
-  })
-});
 
-//Defining CarType with its fields.
-const OwnerType = new GraphQLObjectType({
-  name: "Owner",
+const ProjectType = new GraphQLObjectType({
+  name: 'Project',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    age: { type: GraphQLInt },
-    gender: { type: GraphQLString },
-    cars: {
-      type: new GraphQLList(CarType),
+    description: { type: GraphQLString },
+    author: {
+      type: AuthorType,
       resolve(parent, args) {
-        return cars.find({ ownerId: parent.id });
+        // if (parent.authorId) {
+        //     return Author.findById(parent.authorId)
+        // } else {
+        //     return null
+        // }
+        return Author.findById(parent.authorId)
+        //console.log(parent)
+        //return _.find(authors, { id: parent.authorId })
       }
     }
   })
-});
+})
+const AuthorType = new GraphQLObjectType({
+  name: 'Author',
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
 
-//Defining RootQuery
-const RootQuery = new GraphQLObjectType({
-  name: "RootQueryType",
-  fields: {
-    // Fields here will be the query for frontends
-    //We are defining a 'car' query which can take (car ID ) to search in DB.
-    car: {
-      type: CarType, //Defining model for car Query
-      args: { id: { type: GraphQLID } }, //args field to extract
-      // argument came with car query, e.g : Id of the car object to extract its details.
+    age: { type: GraphQLInt },
+    projects: {
+      type: new GraphQLList(ProjectType),
       resolve(parent, args) {
-        //code to get value  from DB
-        /**
-         * With the help of lodash library(_), we are trying to find car with id from 'CarsArray'
-         * and returning its required data to calling tool.
-         */
-        return cars.findById(args.id);
-      } //resolve function
-    }, //car query ends here
-    owner: {
-      type: OwnerType,
+        return Project.find({ authorId: parent.id })
+        // return _.filter(projects, { authorId: parent.id })
+      }
+    }
+
+  })
+})
+const RootQuery = new GraphQLObjectType({
+  name: 'RootQueryType',
+  fields: {
+    project: {
+      type: ProjectType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return owners.findById(args.id);
+        return Project.findById(args.id)
+        // return _.find(projects, { id: args.id });
+        //code to get data from db
       }
-    }, //owners ends here
-    cars: {
-      type: new GraphQLList(CarType),
+    },
+    author: {
+      type: AuthorType,
+      args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return cars.find({});
+        return Author.findById(args.id)
+        // return _.find(authors, { id: args.id })
       }
-    }, //cars query
-    owners: {
-      type: new GraphQLList(OwnerType),
+    },
+    projects: {
+      type: new GraphQLList(ProjectType),
       resolve(parent, args) {
-        return owners.find({});
+        return Project.find({})
+        // return projects
+      }
+    },
+    authors: {
+      type: new GraphQLList(AuthorType),
+      resolve(parent, args) {
+        return Author.find({})
+        // return authors
       }
     }
-  } //fields end here
-});
 
+  }
+})
 const Mutation = new GraphQLObjectType({
-  name: "Mutation",
+  name: 'Mutation',
   fields: {
-    addOwner: {
-      type: OwnerType,
+    addAuthor: {
+      type: AuthorType,
       args: {
-        name: { type: GraphQLString },
-        age: { type: GraphQLInt },
-        gender: { type: GraphQLString }
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        age: { type: new GraphQLNonNull(GraphQLInt) },
+        //authorId: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve(parent, args) {
-        let owner = new owners({
+        let author = new Author({
           name: args.name,
-          age: args.age,
-          gender: args.gender
+          age: args.age
         });
-        return owner.save();
+        return author.save()
+
       }
-    }, //AddOwner ends here
-    addCar: {
-      type: CarType,
+    },
+    addProject: {
+      type: ProjectType,
       args: {
-        name: { type: GraphQLString },
-        model: { type: GraphQLInt },
-        company: { type: GraphQLString },
-        ownerId: { type: GraphQLID }
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        description: { type: new GraphQLNonNull(GraphQLString) },
+        authorId: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve(parent, args) {
-        let car = new cars({
+        let project = new Project({
           name: args.name,
-          model: args.model,
-          company: args.company,
-          ownerId: args.ownerId
-        });
-
-        return car.save();
+          description: args.description,
+          authorId: args.authorId
+        })
+        return project.save()
       }
-    } //addCar
-  } //fields ends here
-});
+    },
 
-//exporting 'GraphQLSchema with RootQuery' for GraphqlHTTP middleware.
-module.exports = new GraphQLSchema({
+    removeProject: {
+      type: ProjectType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLString)
+        }
+      },
+      resolve(parent, args) {
+        const remBook = Project.findByIdAndRemove(args.id).exec();
+        if (!remBook) {
+          throw new Error('Error')
+        }
+        return remBook;
+      }
+    }
+    // deleteProject: {
+    //     type: ProjectType,
+    //     args: {
+    //         id: { type: new GraphQLNonNull(GraphQLID) }
+    //     },
+    //     resolve(parent, args) {
+    //         let project = new Project()
+    //         return project.findOneAndRemove({ _id: args.id })
+    //     }
+    // }
+
+
+
+  }
+
+
+})
+
+module.exports = new graphql.GraphQLSchema({
   query: RootQuery,
   mutation: Mutation
-});
+})
