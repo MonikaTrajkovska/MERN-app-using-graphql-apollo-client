@@ -1,23 +1,36 @@
-import React from "react";
-import ApolloClient from "apollo-boost"; //connect with our server which is running at backend
-import { ApolloProvider } from "react-apollo"; // Connect react with apollo.
-import CarList from "./components/CarList";
-import AddCar from "./components/AddCar";
 
-//Using ApolloClient to connect with server
-const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql"
-});
+import React from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import ProjectList from "./components/ProjectList";
+import AddProject from "./components/AddProject";
+import EditProject from './components/EditProject'
+import ProjectDetails from "./components/ProjectDetails";
+//import "./App.css";
 
 function App() {
   return (
-    <ApolloProvider client={client}>
-      <div className="App">
-        <h1>List of Cars</h1>
-        <CarList></CarList>
-        <AddCar></AddCar>
+    <Router>
+      <div>
+        <nav>
+
+
+          <div >
+            <Link to="/list">
+              All Projects
+            </Link>
+
+            <Link to="/newproject">
+              New Project
+            </Link>
+          </div>
+        </nav>
+
+        <Route exact path="/list" component={ProjectList} />
+        <Route path="/newproject" component={AddProject} />
+        <Route path="/project/:id" component={EditProject} />
+        <Route path="/detail/:id" component={ProjectDetails} />
       </div>
-    </ApolloProvider>
+    </Router>
   );
 }
 

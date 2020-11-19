@@ -1,22 +1,11 @@
 const express = require('express')
-//const graphqlHTTP = require('express-graphql')
-const { graphqlHTTP } = require('express-graphql');
-//const mongoose = require('mongoose');
+const graphqlHTTP = require('express-graphql');
 const schema = require('./schema/schema')
 const cors = require('cors')
 
 const app = express();
 app.use(cors())
 const mongoose = require("mongoose");
-// mongoose
-//     .connect(
-//         "mongodb+srv://user:DEV123!@cluster0.wqoad.mongodb.net/projects?retryWrites=true&w=majority",
-//         { useNewUrlParser: true, useUnifiedTopology: true }
-//     )
-//     .then(() => console.log("Connected to MongoDB Atlas"))
-//     .catch(err => console.log("Error: ", err.message));
-
-
 
 
 
@@ -25,11 +14,14 @@ mongoose.connection.once('open', () => {
   console.log("connected")
 
 })
-app.use('/graphql', graphqlHTTP({
-  schema,
-  graphiql: true
-}))
 
-app.listen(4000, () => {
-  console.log("now listening on port 4000")
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: schema,
+    graphiql: true
+  })
+);
+app.listen(5000, () => {
+  console.log("now listening on port 5000")
 })

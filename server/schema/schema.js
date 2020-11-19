@@ -1,5 +1,4 @@
 const graphql = require('graphql')
-//const _ = require('lodash')
 const Project = require('../models/project')
 const Author = require('../models/author')
 
@@ -9,27 +8,25 @@ const { GraphQLObjectType,
   GraphQLID,
   GraphQLInt,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
+
+
 } = graphql;
-
-
+// var GraphQLTime = require('graphql-date');
 const ProjectType = new GraphQLObjectType({
   name: 'Project',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
+    hours: { type: GraphQLString },
+
+
     author: {
       type: AuthorType,
       resolve(parent, args) {
-        // if (parent.authorId) {
-        //     return Author.findById(parent.authorId)
-        // } else {
-        //     return null
-        // }
         return Author.findById(parent.authorId)
-        //console.log(parent)
-        //return _.find(authors, { id: parent.authorId })
+
       }
     }
   })
@@ -39,13 +36,12 @@ const AuthorType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-
     age: { type: GraphQLInt },
     projects: {
       type: new GraphQLList(ProjectType),
       resolve(parent, args) {
         return Project.find({ authorId: parent.id })
-        // return _.filter(projects, { authorId: parent.id })
+
       }
     }
 
@@ -59,8 +55,7 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         return Project.findById(args.id)
-        // return _.find(projects, { id: args.id });
-        //code to get data from db
+
       }
     },
     author: {
@@ -68,21 +63,21 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         return Author.findById(args.id)
-        // return _.find(authors, { id: args.id })
+
       }
     },
     projects: {
       type: new GraphQLList(ProjectType),
       resolve(parent, args) {
         return Project.find({})
-        // return projects
+
       }
     },
     authors: {
       type: new GraphQLList(AuthorType),
       resolve(parent, args) {
         return Author.find({})
-        // return authors
+
       }
     }
 
@@ -96,7 +91,7 @@ const Mutation = new GraphQLObjectType({
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
         age: { type: new GraphQLNonNull(GraphQLInt) },
-        //authorId: { type: new GraphQLNonNull(GraphQLID) }
+        // authorId: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve(parent, args) {
         let author = new Author({
@@ -112,13 +107,17 @@ const Mutation = new GraphQLObjectType({
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: new GraphQLNonNull(GraphQLString) },
-        authorId: { type: new GraphQLNonNull(GraphQLID) }
+        hours: { type: new GraphQLNonNull(GraphQLString) },
+        authorId: { type: new GraphQLNonNull(GraphQLID) },
+
       },
       resolve(parent, args) {
         let project = new Project({
           name: args.name,
           description: args.description,
-          authorId: args.authorId
+          hours: args.hours,
+          authorId: args.authorId,
+
         })
         return project.save()
       }
@@ -132,23 +131,57 @@ const Mutation = new GraphQLObjectType({
         }
       },
       resolve(parent, args) {
-        const remBook = Project.findByIdAndRemove(args.id).exec();
-        if (!remBook) {
+        const remProject = Project.findByIdAndRemove(args.id).exec();
+        if (!remProject) {
           throw new Error('Error')
         }
-        return remBook;
+        return remProject;
       }
-    }
-    // deleteProject: {
-    //     type: ProjectType,
-    //     args: {
-    //         id: { type: new GraphQLNonNull(GraphQLID) }
-    //     },
-    //     resolve(parent, args) {
-    //         let project = new Project()
-    //         return project.findOneAndRemove({ _id: args.id })
-    //     }
-    // }
+    },
+    updateProject: {
+      type: ProjectType,
+      args: {
+        id: {
+
+          type: new GraphQLNonNull(GraphQLString)
+        },
+
+        name: {
+          type: new GraphQLNonNull(GraphQLString)
+        },
+        description: {
+          type: new GraphQLNonNull(GraphQLString)
+        },
+
+        hours: {
+          type: new GraphQLNonNull(GraphQLString)
+        }
+
+      },
+      resolve(parent, args) {
+        return Project.findByIdAndUpdate(args.id, { name: args.name, description: args.description, hours: args.hours, }, function (err) {
+          if (err) return next(err);
+        });
+      }
+    },
+    removeHours: {
+      type: ProjectType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLString)
+        },
+        hours: {
+          type: new GraphQLNonNull(GraphQLString)
+        }
+      },
+      resolve(parent, args) {
+        const rem = Project.findByIdAndUpdate(args.id, { hours: args.hours }).exec();
+        if (!rem) {
+          throw new Error('Error')
+        }
+        return rem;
+      }
+    },
 
 
 

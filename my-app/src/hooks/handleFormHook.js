@@ -15,7 +15,7 @@ const HandleFormHook = callback => {
     setInputs(inputs => ({
       ...inputs,
       [event.target.name]: event.target.value,
-
+      // [event.target.hours]: event.target.value,
     }));
   };
   return {
