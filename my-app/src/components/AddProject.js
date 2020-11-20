@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, withRouter } from "react-router-dom";
 import { compose } from "recompose";
 import '../components/CSS/AddProject.css'
 import {
@@ -10,6 +10,7 @@ import { graphql } from "react-apollo";
 import HandleFormHook from "../hooks/handleFormHook";
 
 const AddProject = props => {
+
   const getFormData = () => {
     console.log(`${inputs}`);
     props.addProjectMut({
@@ -50,6 +51,7 @@ const AddProject = props => {
 
         <form onSubmit={handleSubmit}>
           <div >
+            <Link to="/list"><i class="fas fa-arrow-left"></i>   Back</Link>
             <h3>Add New Project</h3>
             <label className="text-field-input2">Project name</label>
             <input className="text-field2"
@@ -90,7 +92,10 @@ const AddProject = props => {
               {getOwners(props)}
             </select>
           </div>
-          <Link to="/list" ><button className="primary-button2" >Add Project</button></Link>
+
+          <button className="primary-button2" >Add Project</button>
+
+
         </form>
       </div>
     </>

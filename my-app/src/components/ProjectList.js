@@ -8,6 +8,7 @@ import ProjectDetails from "./ProjectDetails";
 
 const ProjectsList = props => {
   console.log(props);
+
   const [Id, setProject] = React.useState(0);
   const { loading, error, data } = useQuery(getProjectsQuery);
   const [removeProject] = useMutation(DELETE_PROJECT_QUERY, {
@@ -54,6 +55,8 @@ const ProjectsList = props => {
                   removeProject({ variables: { id: project.id } });
                   notify.show("Project was deleted successfully", "success");
                 }} ></span ></td>
+
+
 
             <td>   <Link to={`project/${project.id}`}><span><i class="fas fa-edit"></i></span></Link></td>
           </tr>
@@ -110,11 +113,10 @@ const ProjectsList = props => {
           <p className='paragraph1'>Total hours: {sumHours.join(':')}</p>
         </table>
       </div>
-      {/* <Link  className="card-footer-item">
-        Edit
-                  </Link> */}
+
 
       <ProjectDetails projectId={Id}></ProjectDetails>
+
     </>
 
   );

@@ -10,6 +10,7 @@ import { onError } from "apollo-link-error";
 import Notifications, { notify } from "react-notify-toast";
 import App from "./App";
 import * as serviceWorker from "./components/serviceWorker";
+// import 'semantic-ui-css/semantic.min.css';
 
 const errorLink = onError(({ graphQLErrors }) => {
     if (graphQLErrors)
@@ -27,9 +28,11 @@ const client = new ApolloClient({
 
 ReactDOM.render(
     <ApolloProvider client={client}>
+
         <Notifications />
         <App />
     </ApolloProvider>,
+
     document.getElementById("root")
 );
 

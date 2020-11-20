@@ -19,28 +19,22 @@ body,html{
   
   .box-container2{
     display: flex;
+    margin-top: 100px;
+    margin-left: 720px;
     justify-content: flex-start;
     align-items: center;
     width: 400px;
-    margin:auto;
+    /* margin:auto; */
     background-color: #fff;
     padding-left: 40px;
     padding-top: 20px;
     padding-bottom: 20px;
     height: 500px;
-    width: 350px;
+    width: 370px;
     border-radius: 5px;
     
 }
 
-#login2 {
-    display: flex;
-    width: 1000px;
-    max-height: 690px;
-    margin: auto;
-    margin-left: 100px;
-    margin-bottom: 10px;
-}
 .input-container2 {
     margin: 0px 0px 20px 0px;
     width: 100%;
@@ -83,12 +77,12 @@ body,html{
 .primary-button2 {
     font-size: 15px;
     color: #fff;
-    background: #1DD1A1;
+    background: #a1a1a1;
     height: 40px;
     box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.17);
     padding-left: 100px;
     padding-right: 100px;
-    width: 100%;
+    width: 105%;
     height: 45px;
     margin-top: 10px;
     border-radius: 5px;
@@ -99,30 +93,21 @@ body,html{
     text-transform: uppercase;
 }
 
-.new2{
+.box-container{
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-    align-items:center;
-    background-color: #e9e7e7;
-    text-align: center;
-    color:#9a9a9a;
-    width: 600px;
-    height: 600px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 250;
-    border-radius: 5px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    justify-content: flex-start;
+    align-items: center;
+    /* width: 50%; */
+    margin-top: 100px;
+    margin-left: 720px;
+    /* margin: auto; */
+    background-color: #fff;
+    /* padding: 20px; */
+    padding-left: 65px;
+    height: 500px;
+    /* margin-top: 100px; */
+    width: 370px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
 }
-#new2 h3{
-    margin-left: 200px;
-    margin-bottom: 25px;
-    margin-top: 25px;
-    font-family: 'Roboto', sans-serif;
-}
-.new2 p i{
-    font-size: 50px;
-    color: #9a9a9a;
-}
+

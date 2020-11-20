@@ -44,51 +44,12 @@ body,html{
       justify-content: space-between;
   }
   
-  #filter5{
-      height: 30px;
-      margin-top: 40px;
-      margin-right: 155px;
-      margin-left: 10px;
-      margin-bottom: 10px;
-      color: #8d8d8d;
-  }
+
   h3{
     margin-top: 40px;
     margin-left:100px;
   }
-  .picture{
-   
-    display: flex;
-    justify-content: flex-end;
-    
-    
-  
-  }
-  #profile{
-    margin-left:900px;
-  }
-  .fixed-button5{
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    Font-size: 15px;
-  Background: #576574;
-  Box-shadow: 0px 0px 16px
-  rgba(0, 0, 0, 0.17);
-  height: 35px;
-  min-width: 20px;
-  padding: 10px;
-  color: #fff;
-  text-transform: uppercase;
-  border-radius: 5px;
-  position: fixed;
-  bottom: 43px;
-  right: 145px; 
-  
-  }
-  .fixed-button5:hover{
-    background-color: #d2d6d0;
-  }
+
   .paragraph1{
     
     position: fixed;
@@ -107,7 +68,7 @@ body,html{
   
 /*     
     margin-left: 50px; */
-    padding: 20px;
+     padding: 15px 15px
     /* padding-left: 50px; */
 
 }
